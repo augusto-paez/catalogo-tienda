@@ -31,6 +31,14 @@ const Catalogo = {
     el.innerHTML = productos
       .map((p, i) => this.templateCard(p, i))
       .join("");
+
+    // Registra el evento de teclado en cada card para accesibilidad.
+    // Permite abrir el modal presionando Enter al navegar con teclado.
+    el.querySelectorAll(".card").forEach(card => {
+      card.addEventListener("keydown", e => {
+        if (e.key === "Enter") card.click();
+      });
+    });
   },
 
   // Genera el HTML de una card individual.
