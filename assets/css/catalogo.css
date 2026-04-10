@@ -1,0 +1,176 @@
+/* ── Grid de productos ──────────────────────────────────────────
+   auto-fill crea tantas columnas como entren en el ancho disponible.
+   minmax(230px, 1fr) cada columna mide mínimo 230px y máximo 1fr.
+   ---------------------------------------------------------------- */
+.catalogo {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px 60px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+/* ── Card ───────────────────────────────────────────────────────
+   fadeUp anima cada card al aparecer en pantalla.
+   animation-delay se aplica desde catalogo.js para que las cards
+   aparezcan en cascada una tras otra.
+   ---------------------------------------------------------------- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: box-shadow var(--transition), transform var(--transition);
+  animation: fadeUp 0.35s ease both;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-3px);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Imagen con aspect-ratio fijo para consistencia visual entre cards */
+.card-img-wrap {
+  position: relative;
+  aspect-ratio: 3/4;
+  background: var(--color-accent-light);
+  overflow: hidden;
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+/* Zoom sutil en la imagen al hacer hover sobre la card */
+.card:hover .card-img {
+  transform: scale(1.04);
+}
+
+/* Placeholder con emoji cuando el producto no tiene imagen cargada */
+.card-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 52px;
+}
+
+/* Badge "Sin stock" superpuesto sobre la imagen */
+.badge-agotado {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 3px 10px;
+  background: var(--color-stock-bg);
+  color: var(--color-stock-text);
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+/* flex: 1 hace que el body ocupe el espacio restante
+   para que el footer de la card quede siempre al fondo */
+.card-body {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.card-categoria {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.card-nombre {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1.3;
+}
+
+.card-desc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  flex: 1;
+  margin-top: 2px;
+}
+
+/* Footer de la card: precio a la izquierda, botón WA a la derecha */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+}
+
+.card-precio {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.btn-wa-card {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  background: #25D366;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.btn-wa-card:hover {
+  background: #1EBD5A;
+}
+
+/* Estado deshabilitado cuando disponible: false en config.js */
+.btn-wa-card:disabled {
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+/* Estado vacío cuando no hay productos que coincidan con la búsqueda.
+   grid-column: 1 / -1 hace que ocupe todas las columnas del grid */
+.estado-vacio {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--color-text-muted);
+}
+
+.estado-vacio-icono {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
