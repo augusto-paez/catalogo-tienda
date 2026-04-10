@@ -19,9 +19,11 @@ const Filtros = {
     `).join("");
   },
 
-  // Actualiza la categoría activa y re-renderiza filtros y catálogo
+// Actualiza la categoría activa y re-renderiza filtros y catálogo.
+  // Actualiza el hash de la URL para permitir links directos a categorías.
   setCategoria(cat) {
     this.categoriaActiva = cat;
+    window.location.hash = cat === "Todas" ? "" : cat.toLowerCase();
     this.renderFiltros();
     Catalogo.renderCatalogo();
   },
