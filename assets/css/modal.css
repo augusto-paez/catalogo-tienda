@@ -1,0 +1,192 @@
+/* ── Modal overlay ──────────────────────────────────────────────
+   Cubre toda la pantalla con un fondo semitransparente.
+   opacity y pointer-events controlan la visibilidad y las
+   interacciones sin necesidad de agregar y quitar el elemento del DOM.
+   ---------------------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0; /* equivale a top/right/bottom/left: 0 */
+  background: rgba(26, 23, 20, 0.55);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+/* Clase que modal.js agrega y quita para abrir y cerrar el modal */
+.modal-overlay.abierto {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Contenedor del modal con animación de entrada.
+   max-height y overflow-y permiten scroll si el contenido es largo */
+.modal {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.25s ease;
+}
+
+.modal-overlay.abierto .modal {
+  transform: translateY(0) scale(1);
+}
+
+/* Imagen del producto con bordes redondeados solo arriba
+   para que se integre con el borde del modal */
+.modal-img-wrap {
+  aspect-ratio: 4/3;
+  background: var(--color-accent-light);
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.modal-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Placeholder con emoji cuando el producto no tiene imagen */
+.modal-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+}
+
+/* Botón de cierre superpuesto sobre la imagen */
+.modal-cerrar {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--color-text-primary);
+  transition: background var(--transition);
+}
+
+.modal-cerrar:hover {
+  background: #fff;
+}
+
+.modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-categoria {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.modal-nombre {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.modal-descripcion {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+/* Sección de talles disponibles */
+.modal-talles-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.modal-talles {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.modal-talle-chip {
+  padding: 5px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* Footer del modal: precio a la izquierda, botón WA a la derecha */
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+  gap: 12px;
+}
+
+.modal-precio {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+}
+
+/* flex: 1 hace que el botón ocupe el espacio restante junto al precio */
+.btn-wa-modal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: #25D366;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+  flex: 1;
+  justify-content: center;
+}
+
+.btn-wa-modal:hover {
+  background: #1EBD5A;
+  transform: translateY(-1px);
+}
+
+/* Estado deshabilitado cuando disponible: false en config.js */
+.btn-wa-modal:disabled {
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  transform: none;
+}
