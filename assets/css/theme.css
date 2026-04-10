@@ -1,0 +1,49 @@
+/* ── Fuentes desde Google Fonts ───────────────────────────────────
+   Playfair Display: tipografía de display para títulos y nombres de productos
+   DM Sans: tipografía de cuerpo para texto general e interfaz
+   ---------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+
+  /* ── Tipografía ─────────────────────────────────────────────── */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  /* ── Colores base ───────────────────────────────────────────── */
+  --color-bg:         #FAF8F5; /* fondo general de la página */
+  --color-surface:    #FFFFFF; /* fondo de cards y modal */
+  --color-border:     #E8E2D9; /* bordes suaves */
+  --color-border-mid: #D4CCC0; /* bordes con más contraste */
+
+  /* ── Texto ──────────────────────────────────────────────────── */
+  --color-text-primary:   #1A1714; /* texto principal */
+  --color-text-secondary: #6B6560; /* texto secundario */
+  --color-text-muted:     #A09A94; /* texto terciario y placeholders */
+
+  /* ── Acento ─────────────────────────────────────────────────── 
+     Color principal de la marca. Estos tres valores son los únicos
+     que cambian entre tiendas para adaptar la identidad visual.
+     ---------------------------------------------------------------- */
+  --color-accent:       #C17B4E;
+  --color-accent-light: #F0E6DA; /* versión suave para fondos */
+  --color-accent-dark:  #9A5E35; /* versión oscura para hover */
+
+  /* ── Estados ────────────────────────────────────────────────── */
+  --color-stock-bg:   #FDF0F0; /* fondo del badge "Sin stock" */
+  --color-stock-text: #B94040; /* texto del badge "Sin stock" */
+
+  /* ── Bordes redondeados ─────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  /* ── Sombras ────────────────────────────────────────────────── */
+  --shadow-card:  0 2px 12px rgba(26, 23, 20, 0.07);
+  --shadow-hover: 0 8px 28px rgba(26, 23, 20, 0.13);
+
+  /* ── Transiciones ───────────────────────────────────────────── */
+  --transition: 0.22s ease;
+
+}
