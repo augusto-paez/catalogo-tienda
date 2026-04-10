@@ -1,0 +1,109 @@
+/* ── Header ─────────────────────────────────────────────────────
+   position: sticky mantiene el header visible al hacer scroll.
+   z-index: 100 asegura que quede por encima del resto del contenido.
+   ---------------------------------------------------------------- */
+.header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Contenedor interno con ancho máximo y centrado */
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Bloque de marca: contiene logo o nombre + slogan */
+.header-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.header-logo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
+.header-nombre {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1;
+  letter-spacing: -0.3px;
+}
+
+.header-slogan {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Contenedor de redes sociales y botón de WhatsApp */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Botón de WhatsApp del header */
+.btn-wa-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  background: #25D366;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+  white-space: nowrap;
+}
+
+.btn-wa-header:hover {
+  background: #1EBD5A;
+  transform: translateY(-1px);
+}
+
+/* Contenedor de íconos de redes sociales */
+.header-redes {
+  display: flex;
+  gap: 8px;
+}
+
+/* Botón individual de red social */
+.btn-red {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: border-color var(--transition), color var(--transition);
+  text-decoration: none;
+}
+
+.btn-red:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
