@@ -174,3 +174,22 @@
   font-size: 40px;
   margin-bottom: 12px;
 }
+
+/* ── Chips de talles en las cards ───────────────────────────────
+   Se muestran debajo de la descripción cuando el producto
+   tiene talles definidos en config.js.
+   ---------------------------------------------------------------- */
+.card-talles {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.talle-chip {
+  padding: 2px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
