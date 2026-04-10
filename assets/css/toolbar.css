@@ -1,0 +1,93 @@
+/* ── Toolbar ────────────────────────────────────────────────────
+   Contenedor del buscador y los botones de filtro por categoría.
+   flex-direction: column apila ambos elementos verticalmente.
+   ---------------------------------------------------------------- */
+.toolbar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Wrapper del input de búsqueda para posicionar el ícono adentro */
+.search-wrap {
+  position: relative;
+}
+
+/* Ícono de lupa posicionado sobre el input.
+   pointer-events: none evita que interfiera con los clicks al input */
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 380px;
+  padding: 10px 14px 10px 40px; /* padding-left deja espacio para el ícono */
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.search-input:focus {
+  border-color: var(--color-accent);
+}
+
+/* Contenedor de los botones de filtro.
+   flex-wrap: wrap permite que se acomoden en múltiples filas si no entran */
+.filtros {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Botón de filtro con forma de píldora */
+.btn-filtro {
+  padding: 6px 16px;
+  border-radius: 99px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-filtro:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* Estado activo: fondo oscuro con texto claro */
+.btn-filtro.activo {
+  background: var(--color-text-primary);
+  border-color: var(--color-text-primary);
+  color: var(--color-bg);
+}
+
+/* Contador de resultados debajo del toolbar */
+.resultados-info {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
