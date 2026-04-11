@@ -18,50 +18,14 @@ const STORE_CONFIG = {
   // ── Categorías del catálogo ────────────────────────────────────
   categorias: ["Remeras", "Vestidos", "Pantalones", "Accesorios"],
 
-  // ── Productos ─────────────────────────────────────────────────
-  // imagen: ruta relativa a assets/img/productos/ o URL externa
-  // disponible: false muestra badge "Sin stock" y deshabilita el botón de WA
-  productos: [
-    {
-      id:          1,
-      nombre:      "Remera esencial",
-      categoria:   "Remeras",
-      precio:      8500,
-      imagen:      "",
-      descripcion: "100% algodón peinado. Corte recto. Talles S al XL.",
-      talles:      ["S", "M", "L", "XL"],
-      disponible:  true,
-    },
-    {
-      id:          2,
-      nombre:      "Vestido lino natural",
-      categoria:   "Vestidos",
-      precio:      18500,
-      imagen:      "",
-      descripcion: "Lino 100%, largo midi. Ideal para el calor. Talles S al L.",
-      talles:      ["S", "M", "L"],
-      disponible:  true,
-    },
-    {
-      id:          3,
-      nombre:      "Jean slouchy",
-      categoria:   "Pantalones",
-      precio:      25000,
-      imagen:      "",
-      descripcion: "Corte holgado y caído. Denim medio. Talles 36 al 42.",
-      talles:      ["36", "38", "40", "42"],
-      disponible:  false,
-    },
-    {
-      id:          4,
-      nombre:      "Collar dorado",
-      categoria:   "Accesorios",
-      precio:      5500,
-      imagen:      "",
-      descripcion: "Baño en oro 18k. Largo regulable.",
-      talles:      [],
-      disponible:  true,
-    },
-  ],
-
+  // Your web app's Firebase configuration
+  firebaseConfig: {
+    apiKey: "AIzaSyCB3Ti6I96w_kmhku783iAAatizkXC5xcI",
+    authDomain: "alma-tienda-a4c36.firebaseapp.com",
+    projectId: "alma-tienda-a4c36",
+    storageBucket: "alma-tienda-a4c36.firebasestorage.app",
+    messagingSenderId: "224237799998",
+    appId: "1:224237799998:web:3b8a3f6e845a91f1709f6f"
+  },
+  
 };
