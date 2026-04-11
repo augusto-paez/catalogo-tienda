@@ -1,13 +1,34 @@
-const Catalogo = {
+import { Filtros }  from "./filtros.js";
+import { Modal }    from "./modal.js";
+import { WhatsApp } from "./whatsapp.js";
 
-  // Renderiza las cards de productos en el DOM.
-  // Lee los productos filtrados desde Filtros.js y genera el HTML.
+export const Catalogo = {
+
+  // Arrays de productos y categorías recibidos desde Firestore a través de app.js
+  productos:  [],
+  categorias: [],
+
+  // Actualiza el array de productos y re-renderiza el catálogo.
+  // Es llamado por app.js cada vez que Firestore reporta un cambio.
+  setProductos(productos) {
+    this.productos = productos;
+    this.renderCatalogo();
+  },
+
+  // Actualiza el array de categorías y re-renderiza los filtros.
+  // Es llamado por app.js cada vez que Firestore reporta un cambio.
+  setCategorias(categorias) {
+    this.categorias = categorias;
+    Filtros.renderFiltros(categorias);
+  },
+
+  // Renderiza las cards de productos en el DOM
   renderCatalogo() {
     const el = document.getElementById("catalogo");
     const elInfo = document.getElementById("resultados-info");
     if (!el) return;
 
-    const productos = Filtros.productosFiltrados();
+    const productos = Filtros.productosFiltrados(this.productos);
 
     // Actualiza el contador de resultados
     if (elInfo) {
@@ -41,28 +62,24 @@ const Catalogo = {
     });
   },
 
-  // Genera el HTML de una card individual.
-  // animation-delay escalonado crea el efecto de aparición en cascada.
+  // Genera el HTML de una card individual
   templateCard(producto, indice) {
     const precio = producto.precio.toLocaleString("es-AR");
 
+    // Muestra la imagen si existe, o un emoji genérico como placeholder
     const imagen = producto.imagen
       ? `<img class="card-img" src="${producto.imagen}" alt="${producto.nombre}" loading="lazy">`
-      : `<div class="card-img-placeholder">${this.emojiCategoria(producto.categoria)}</div>`;
+      : `<div class="card-img-placeholder">${this.emojiPlaceholder()}</div>`;
 
-    const talles = producto.talles?.length
-      ? producto.talles.map(t => `<span class="talle-chip">${t}</span>`).join("")
+    const variantes = producto.variantes?.length
+      ? producto.variantes.map(v => `<span class="talle-chip">${v}</span>`).join("")
       : "";
-
-    // JSON.stringify serializa el objeto para pasarlo como atributo HTML.
-    // replace evita que las comillas dobles rompan el atributo onclick.
-    const productoStr = JSON.stringify(producto).replace(/"/g, "&quot;");
 
     return `
       <article
         class="card"
         style="animation-delay: ${indice * 0.05}s"
-        onclick="Modal.abrir(${productoStr})"
+        data-id="${producto.firestoreId}"
         role="button"
         tabindex="0"
         aria-label="Ver detalle de ${producto.nombre}"
@@ -75,12 +92,12 @@ const Catalogo = {
           <span class="card-categoria">${producto.categoria}</span>
           <h3 class="card-nombre">${producto.nombre}</h3>
           <p class="card-desc">${producto.descripcion}</p>
-          ${talles ? `<div class="card-talles">${talles}</div>` : ""}
+          ${variantes ? `<div class="card-talles">${variantes}</div>` : ""}
           <div class="card-footer">
             <span class="card-precio">$${precio}</span>
             <button
               class="btn-wa-card"
-              onclick="event.stopPropagation(); WhatsApp.consultarProducto(${productoStr})"
+              data-id="${producto.firestoreId}"
               ${!producto.disponible ? "disabled" : ""}
               aria-label="Consultar ${producto.nombre} por WhatsApp"
             >
@@ -93,19 +110,35 @@ const Catalogo = {
     `;
   },
 
-  // Devuelve un emoji representativo según la categoría del producto.
-  // Si la categoría no está en el mapa devuelve un emoji genérico.
-  emojiCategoria(categoria) {
-    const mapa = {
-      "Remeras":    "👕",
-      "Vestidos":   "👗",
-      "Pantalones": "👖",
-      "Accesorios": "👜",
-      "Calzado":    "👟",
-      "Camperas":   "🧥",
-      "Buzos":      "🧶",
-    };
-    return mapa[categoria] || "🛍️";
+  // Registra los eventos de click en las cards y botones de WhatsApp.
+  // Usa delegación de eventos en el contenedor para no registrar
+  // un listener por cada card.
+  bindEventos() {
+    const el = document.getElementById("catalogo");
+    if (!el) return;
+
+    el.addEventListener("click", e => {
+      // Click en el botón de WhatsApp
+      const btnWa = e.target.closest(".btn-wa-card");
+      if (btnWa && !btnWa.disabled) {
+        e.stopPropagation();
+        const producto = this.productos.find(p => p.firestoreId === btnWa.dataset.id);
+        if (producto) WhatsApp.consultarProducto(producto);
+        return;
+      }
+
+      // Click en la card — abre el modal
+      const card = e.target.closest(".card");
+      if (card) {
+        const producto = this.productos.find(p => p.firestoreId === card.dataset.id);
+        if (producto) Modal.abrir(producto);
+      }
+    });
+  },
+
+  // Devuelve un emoji genérico cuando el producto no tiene imagen cargada
+  emojiPlaceholder() {
+    return "🛍️";
   },
 
 };
