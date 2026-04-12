@@ -3,7 +3,7 @@ import { Modal }    from "./modal.js";
 import { WhatsApp } from "./whatsapp.js";
 
 // ── Configuración de paginación ──────────────────────────────────
-const PRODUCTOS_POR_PAGINA = 12;
+const PRODUCTOS_POR_PAGINA = 20;
 
 export const Catalogo = {
 
