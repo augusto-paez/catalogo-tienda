@@ -1,10 +1,10 @@
-import { STORE_CONFIG }                           from "../../config.js";
-import { initializeApp }                          from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { STORE_CONFIG }                                from "../../config.js";
+import { initializeApp }                              from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword,
-         signOut, onAuthStateChanged }            from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+         signOut, onAuthStateChanged,
+         sendPasswordResetEmail }                     from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // Inicializa Firebase con las mismas credenciales que firebase.js.
-// Cada módulo que necesita Firebase lo inicializa por su cuenta —
 // Firebase detecta que ya existe una instancia y la reutiliza.
 const app  = initializeApp(STORE_CONFIG.firebase);
 const auth = getAuth(app);
@@ -20,6 +20,13 @@ export const Auth = {
   // Cierra la sesión del usuario actual
   async logout() {
     return await signOut(auth);
+  },
+
+  // Envía un email de recuperación de contraseña.
+  // Firebase maneja el envío y el link de reseteo automáticamente.
+  // El emprendedor puede resetear su contraseña sin intervención tuya.
+  async recuperarContrasena(email) {
+    return await sendPasswordResetEmail(auth, email);
   },
 
   // Verifica si hay una sesión activa al cargar la página.
