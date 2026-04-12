@@ -2,43 +2,48 @@ import { Filtros }  from "./filtros.js";
 import { Modal }    from "./modal.js";
 import { WhatsApp } from "./whatsapp.js";
 
+// ── Configuración de paginación ──────────────────────────────────
+const PRODUCTOS_POR_PAGINA = 12;
+
 export const Catalogo = {
 
-  // Arrays de productos y categorías recibidos desde Firestore a través de app.js
-  productos:  [],
-  categorias: [],
+  productos:     [],
+  categorias:    [],
+  paginaActual:  1,
 
-  // Actualiza el array de productos y re-renderiza el catálogo.
-  // Es llamado por app.js cada vez que Firestore reporta un cambio.
+  // Actualiza el array de productos, resetea la paginación y re-renderiza
   setProductos(productos) {
-    this.productos = productos;
+    this.productos    = productos;
+    this.paginaActual = 1;
     this.renderCatalogo();
   },
 
-  // Actualiza el array de categorías y re-renderiza los filtros.
-  // Es llamado por app.js cada vez que Firestore reporta un cambio.
+  // Actualiza el array de categorías y re-renderiza los filtros
   setCategorias(categorias) {
     this.categorias = categorias;
     Filtros.renderFiltros(categorias);
   },
 
-  // Renderiza las cards de productos en el DOM
+  // Renderiza las cards de la página actual
   renderCatalogo() {
     const el = document.getElementById("catalogo");
     const elInfo = document.getElementById("resultados-info");
     if (!el) return;
 
-    const productos = Filtros.productosFiltrados(this.productos);
+    const productosFiltrados = Filtros.productosFiltrados(this.productos);
+    const total              = productosFiltrados.length;
+
+    // Slice de productos para la página actual
+    const productosPagina = productosFiltrados.slice(0, this.paginaActual * PRODUCTOS_POR_PAGINA);
 
     // Actualiza el contador de resultados
     if (elInfo) {
-      elInfo.textContent = productos.length === 0
+      elInfo.textContent = total === 0
         ? ""
-        : `${productos.length} producto${productos.length !== 1 ? "s" : ""}`;
+        : `${total} producto${total !== 1 ? "s" : ""}`;
     }
 
-    // Muestra mensaje cuando no hay productos que coincidan
-    if (productos.length === 0) {
+    if (total === 0) {
       el.innerHTML = `
         <div class="estado-vacio">
           <div class="estado-vacio-icono">🔍</div>
@@ -48,13 +53,30 @@ export const Catalogo = {
       return;
     }
 
-    // Genera las cards con animation-delay escalonado para el efecto en cascada
-    el.innerHTML = productos
+    // Genera las cards con animation-delay escalonado
+    el.innerHTML = productosPagina
       .map((p, i) => this.templateCard(p, i))
       .join("");
 
-    // Registra el evento de teclado en cada card para accesibilidad.
-    // Permite abrir el modal presionando Enter al navegar con teclado.
+    // Agrega el botón "Ver más" si hay más productos por mostrar
+    if (productosPagina.length < total) {
+      el.insertAdjacentHTML("beforeend", `
+        <div class="ver-mas-wrap">
+          <button class="btn-ver-mas" id="btn-ver-mas">
+            Ver más productos
+            <span class="ver-mas-contador">
+              ${productosPagina.length} de ${total}
+            </span>
+          </button>
+        </div>
+      `);
+
+      document.getElementById("btn-ver-mas")?.addEventListener("click", () => {
+        this.cargarMas();
+      });
+    }
+
+    // Registra el evento de teclado en cada card para accesibilidad
     el.querySelectorAll(".card").forEach(card => {
       card.addEventListener("keydown", e => {
         if (e.key === "Enter") card.click();
@@ -62,11 +84,18 @@ export const Catalogo = {
     });
   },
 
+  // Incrementa la página actual y re-renderiza manteniendo el scroll
+  cargarMas() {
+    this.paginaActual++;
+    const scrollAntes = window.scrollY;
+    this.renderCatalogo();
+    window.scrollTo(0, scrollAntes); // mantiene la posición del scroll
+  },
+
   // Genera el HTML de una card individual
   templateCard(producto, indice) {
     const precio = producto.precio.toLocaleString("es-AR");
 
-    // Muestra la imagen si existe, o un emoji genérico como placeholder
     const imagen = producto.imagen
       ? `<img class="card-img" src="${producto.imagen}" alt="${producto.nombre}" loading="lazy">`
       : `<div class="card-img-placeholder">${this.emojiPlaceholder()}</div>`;
@@ -110,15 +139,12 @@ export const Catalogo = {
     `;
   },
 
-  // Registra los eventos de click en las cards y botones de WhatsApp.
-  // Usa delegación de eventos en el contenedor para no registrar
-  // un listener por cada card.
+  // Registra los eventos de click en las cards y botones de WhatsApp
   bindEventos() {
     const el = document.getElementById("catalogo");
     if (!el) return;
 
     el.addEventListener("click", e => {
-      // Click en el botón de WhatsApp
       const btnWa = e.target.closest(".btn-wa-card");
       if (btnWa && !btnWa.disabled) {
         e.stopPropagation();
@@ -127,13 +153,17 @@ export const Catalogo = {
         return;
       }
 
-      // Click en la card — abre el modal
       const card = e.target.closest(".card");
       if (card) {
         const producto = this.productos.find(p => p.firestoreId === card.dataset.id);
         if (producto) Modal.abrir(producto);
       }
     });
+  },
+
+  // Resetea la paginación al cambiar de categoría o buscar
+  resetPaginacion() {
+    this.paginaActual = 1;
   },
 
   // Devuelve un emoji genérico cuando el producto no tiene imagen cargada
