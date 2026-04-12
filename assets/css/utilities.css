@@ -78,3 +78,32 @@
 @media (max-width: 360px) {
   .catalogo { grid-template-columns: 1fr; }
 }
+
+/* ── Estado de carga ─────────────────────────────────────────────
+   Se muestra mientras Firestore responde con los productos.
+   ---------------------------------------------------------------- */
+.estado-carga {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Spinner animado con el color acento de la tienda */
+.estado-carga-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spinner 0.8s linear infinite;
+}
+
+@keyframes spinner {
+  to { transform: rotate(360deg); }
+}
