@@ -12,9 +12,18 @@ export const ConfigLoader = {
     this.aplicarWhatsAppHeader();
   },
 
-  // Aplica nombre, logo y slogan al header
+  // Aplica nombre, logo, slogan y meta tags al documento
   aplicarMarca() {
-    document.title = STORE_CONFIG.nombre;
+    // Título de la pestaña del navegador
+    document.title = STORE_CONFIG.nombre + " — Catálogo";
+
+    // Meta description para buscadores
+    const metaDesc = document.querySelector("meta[name='description']");
+    if (metaDesc) {
+      metaDesc.setAttribute("content",
+        `Catálogo de productos de ${STORE_CONFIG.nombre}. ${STORE_CONFIG.slogan || ""}`
+      );
+    }
 
     const elNombre = document.getElementById("store-nombre");
     if (elNombre) elNombre.textContent = STORE_CONFIG.nombre;
