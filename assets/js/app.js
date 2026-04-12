@@ -4,25 +4,27 @@ import { Catalogo }     from "./catalogo.js";
 import { Modal }        from "./modal.js";
 import { Firebase }     from "./firebase.js";
 
+// ── Configuración de caché ───────────────────────────────────────
+// Los datos se guardan en sessionStorage — duran mientras la pestaña
+// esté abierta. Si el visitante abre una pestaña nueva vuelve a leer
+// Firestore una sola vez.
+const CACHE_KEY_PRODUCTOS  = "cache_productos";
+const CACHE_KEY_CATEGORIAS = "cache_categorias";
+const CACHE_DURACION_MS    = 5 * 60 * 1000; // 5 minutos en milisegundos
+
 const App = {
 
-  // Punto de entrada de la aplicación.
-  // Inicializa todos los módulos en el orden correcto.
+  // Punto de entrada de la aplicación
   init() {
-    ConfigLoader.init();      // aplica datos de la tienda al DOM
-    Filtros.bindEventos();    // registra eventos del buscador y filtros
-    Catalogo.bindEventos();   // registra eventos de las cards
-    Modal.bindEventos();      // registra eventos de cierre del modal
-    this.escucharFirestore(); // inicia la escucha en tiempo real
+    ConfigLoader.init();
+    Filtros.bindEventos();
+    Catalogo.bindEventos();
+    Modal.bindEventos();
+    this.cargarDatos();
   },
 
-  // Inicia la escucha en tiempo real de productos y categorías en Firestore.
-  // Cada vez que el emprendedor modifica datos desde el panel de admin
-  // el catálogo se actualiza automáticamente sin recargar la página.
-  // hashResuelto evita que manejarHash se ejecute más de una vez
-  // ya que onSnapshot puede dispararse múltiples veces.
-  escucharFirestore() {
-    // Estado de carga mientras Firestore responde
+  // Carga productos y categorías desde caché o desde Firestore
+  async cargarDatos() {
     document.getElementById("catalogo").innerHTML = `
       <div class="estado-carga">
         <div class="estado-carga-spinner"></div>
@@ -30,24 +32,57 @@ const App = {
       </div>
     `;
 
-    let hashResuelto = false;
-    Firebase.escucharCategorias(categorias => {
-      Catalogo.setCategorias(categorias);
-    });
+    try {
+      const [productos, categorias] = await Promise.all([
+        this.obtenerConCache(CACHE_KEY_PRODUCTOS,  () => Firebase.obtenerProductos()),
+        this.obtenerConCache(CACHE_KEY_CATEGORIAS, () => Firebase.obtenerCategorias()),
+      ]);
 
-    Firebase.escucharProductos(productos => {
+      Catalogo.setCategorias(categorias);
       Catalogo.setProductos(productos);
-      if (!hashResuelto) {
-        hashResuelto = true;
-        this.manejarHash();
+      this.manejarHash();
+
+    } catch (error) {
+      document.getElementById("catalogo").innerHTML = `
+        <div class="estado-vacio">
+          <div class="estado-vacio-icono">⚠️</div>
+          <p>No pudimos cargar los productos. Revisá tu conexión e intentá de nuevo.</p>
+        </div>
+      `;
+    }
+  },
+
+  // Devuelve datos desde la caché si son válidos, o los obtiene desde
+  // Firestore y los guarda en caché para las próximas consultas.
+  async obtenerConCache(key, fetchFn) {
+    try {
+      const cached = sessionStorage.getItem(key);
+      if (cached) {
+        const { datos, timestamp } = JSON.parse(cached);
+        const esValida = Date.now() - timestamp < CACHE_DURACION_MS;
+        if (esValida) return datos;
       }
-    });
+    } catch {
+      // Si hay un error leyendo la caché simplemente la ignoramos
+    }
+
+    // Caché inválida o inexistente — lee desde Firestore
+    const datos = await fetchFn();
+
+    try {
+      sessionStorage.setItem(key, JSON.stringify({
+        datos,
+        timestamp: Date.now(),
+      }));
+    } catch {
+      // Si sessionStorage no está disponible continuamos sin caché
+    }
+
+    return datos;
   },
 
   // Maneja el hash de la URL al cargar la página.
-  // Permite compartir links directos a productos o categorías:
-  // tienda.com/#producto-abc123  → abre el modal de ese producto
-  // tienda.com/#vestidos         → filtra por la categoría "Vestidos"
+  // Se ejecuta después de cargar los datos para poder encontrar productos.
   manejarHash() {
     const hash = window.location.hash.replace("#", "");
     if (!hash) return;
@@ -59,7 +94,6 @@ const App = {
       return;
     }
 
-    // Intenta interpretar el hash como una categoría
     const cat = Catalogo.categorias.find(
       c => c.nombre.toLowerCase() === hash.toLowerCase()
     );
@@ -68,5 +102,4 @@ const App = {
 
 };
 
-// Arranca la aplicación cuando el DOM está completamente cargado
 document.addEventListener("DOMContentLoaded", () => App.init());

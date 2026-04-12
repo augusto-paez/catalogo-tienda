@@ -21,29 +21,30 @@ export const Filtros = {
     `).join("");
   },
 
-  // Actualiza la categoría activa y re-renderiza filtros y catálogo.
-  // Actualiza el hash de la URL para permitir links directos a categorías.
+  // Actualiza la categoría activa, resetea la paginación y re-renderiza.
+  // Resetear la paginación evita que el usuario quede en una página
+  // que no existe para la nueva categoría seleccionada.
   setCategoria(cat) {
     this.categoriaActiva = cat;
     window.location.hash = cat === "Todas" ? "" : cat.toLowerCase();
+    Catalogo.resetPaginacion();
     this.renderFiltros(Catalogo.categorias);
     Catalogo.renderCatalogo();
   },
 
-  // Actualiza el texto de búsqueda y re-renderiza el catálogo
+  // Actualiza el texto de búsqueda, resetea la paginación y re-renderiza
   setBusqueda(texto) {
     this.busqueda = texto.toLowerCase().trim();
+    Catalogo.resetPaginacion();
     Catalogo.renderCatalogo();
   },
 
-  // Devuelve los productos filtrados por categoría activa y texto de búsqueda.
-  // Recibe el array de productos desde Catalogo.js.
+  // Devuelve los productos filtrados por categoría activa y texto de búsqueda
   productosFiltrados(productos) {
     return productos.filter(p => {
       const matchCategoria =
         this.categoriaActiva === "Todas" || p.categoria === this.categoriaActiva;
 
-      // Busca coincidencias en nombre, descripción y categoría
       const matchBusqueda =
         !this.busqueda ||
         p.nombre.toLowerCase().includes(this.busqueda) ||

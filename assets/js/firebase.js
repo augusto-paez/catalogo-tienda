@@ -1,15 +1,38 @@
-import { STORE_CONFIG } from "../../config.js";
-import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { STORE_CONFIG }                              from "../../config.js";
+import { initializeApp }                             from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, onSnapshot,
-         addDoc, updateDoc, deleteDoc, doc }    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+         getDocs, addDoc, updateDoc,
+         deleteDoc, doc }                            from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const app = initializeApp(STORE_CONFIG.firebase);
 const db  = getFirestore(app);
 
 export const Firebase = {
 
-  // Escucha cambios en tiempo real en la colección "productos".
-  // Retorna una función para cancelar la escucha cuando sea necesario.
+  // ── Catálogo público — lectura única ────────────────────────────
+  // getDocs() lee una sola vez y cierra la conexión.
+  // Reduce drásticamente las lecturas comparado con onSnapshot().
+
+  async obtenerProductos() {
+    const snapshot = await getDocs(collection(db, "productos"));
+    return snapshot.docs.map(doc => ({
+      firestoreId: doc.id,
+      ...doc.data(),
+    }));
+  },
+
+  async obtenerCategorias() {
+    const snapshot = await getDocs(collection(db, "categorias"));
+    return snapshot.docs.map(doc => ({
+      firestoreId: doc.id,
+      ...doc.data(),
+    }));
+  },
+
+  // ── Panel de admin — escucha en tiempo real ──────────────────────
+  // onSnapshot() mantiene la conexión abierta para que el emprendedor
+  // vea sus cambios al instante sin recargar la página.
+
   escucharProductos(callback) {
     const ref = collection(db, "productos");
     return onSnapshot(ref, snapshot => {
@@ -21,9 +44,6 @@ export const Firebase = {
     });
   },
 
-  // Escucha cambios en tiempo real en la colección "categorias".
-  // El catálogo y los filtros se actualizan automáticamente cuando
-  // el emprendedor agrega o elimina una categoría desde el panel.
   escucharCategorias(callback) {
     const ref = collection(db, "categorias");
     return onSnapshot(ref, snapshot => {
@@ -35,27 +55,26 @@ export const Firebase = {
     });
   },
 
-  // Agrega un producto nuevo a Firestore
+  // ── CRUD de productos ────────────────────────────────────────────
+
   async agregarProducto(producto) {
     return await addDoc(collection(db, "productos"), producto);
   },
 
-  // Actualiza los campos de un producto existente
   async actualizarProducto(firestoreId, datos) {
     return await updateDoc(doc(db, "productos", firestoreId), datos);
   },
 
-  // Elimina un producto de Firestore
   async eliminarProducto(firestoreId) {
     return await deleteDoc(doc(db, "productos", firestoreId));
   },
 
-  // Agrega una categoría nueva a Firestore
+  // ── CRUD de categorías ───────────────────────────────────────────
+
   async agregarCategoria(categoria) {
     return await addDoc(collection(db, "categorias"), categoria);
   },
 
-  // Elimina una categoría de Firestore
   async eliminarCategoria(firestoreId) {
     return await deleteDoc(doc(db, "categorias", firestoreId));
   },
