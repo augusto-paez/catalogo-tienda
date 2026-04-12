@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Panel</title>
+
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+
+  <!-- Header del panel -->
+  <header class="admin-header">
+    <div class="admin-header-inner">
+      <span id="store-nombre" class="admin-store-nombre"></span>
+      <button class="btn-logout" id="btn-logout">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <!-- Contenido principal — oculto hasta verificar sesión -->
+  <main class="admin-main" id="admin-main" style="display:none">
+
+    <!-- Tabs de navegación -->
+    <div class="admin-tabs">
+      <button class="admin-tab activo" data-tab="productos">Productos</button>
+      <button class="admin-tab" data-tab="categorias">Categorías</button>
+    </div>
+
+    <!-- ── Sección productos ──────────────────────────────────── -->
+    <section class="admin-seccion" id="tab-productos">
+
+      <div class="admin-seccion-header">
+        <h2 class="admin-seccion-titulo">Productos</h2>
+        <button class="btn-agregar" id="btn-agregar-producto">+ Agregar producto</button>
+      </div>
+
+      <!-- Formulario de producto — oculto por defecto -->
+      <div class="admin-form-wrap" id="form-producto-wrap" style="display:none">
+        <div class="admin-form" id="form-producto">
+
+          <h3 class="form-titulo" id="form-producto-titulo">Nuevo producto</h3>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" id="prod-nombre" placeholder="Nombre del producto">
+            </div>
+            <div class="form-group">
+              <label>Categoría</label>
+              <select id="prod-categoria"></select>
+            </div>
+            <div class="form-group">
+              <label>Precio</label>
+              <input type="number" id="prod-precio" placeholder="0">
+            </div>
+            <div class="form-group">
+              <label>URL de imagen</label>
+              <input type="text" id="prod-imagen" placeholder="https://... (opcional)">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea id="prod-descripcion" placeholder="Descripción del producto" rows="3"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Label de variantes <span class="form-hint">(ej: Talles, Medidas, Colores)</span></label>
+            <input type="text" id="prod-label-variantes" placeholder="Talles">
+          </div>
+
+          <div class="form-group">
+            <label>Variantes <span class="form-hint">(una por línea)</span></label>
+            <textarea id="prod-variantes" placeholder="S&#10;M&#10;L&#10;XL" rows="4"></textarea>
+          </div>
+
+          <div class="form-group form-group-check">
+            <input type="checkbox" id="prod-disponible" checked>
+            <label for="prod-disponible">Disponible</label>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-cancelar" id="btn-cancelar-producto">Cancelar</button>
+            <button class="btn-guardar" id="btn-guardar-producto">Guardar producto</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Lista de productos -->
+      <div class="admin-lista" id="lista-productos"></div>
+
+    </section>
+
+    <!-- ── Sección categorías ─────────────────────────────────── -->
+    <section class="admin-seccion" id="tab-categorias" style="display:none">
+
+      <div class="admin-seccion-header">
+        <h2 class="admin-seccion-titulo">Categorías</h2>
+        <button class="btn-agregar" id="btn-agregar-categoria">+ Agregar categoría</button>
+      </div>
+
+      <!-- Formulario de categoría — oculto por defecto -->
+      <div class="admin-form-wrap" id="form-categoria-wrap" style="display:none">
+        <div class="admin-form" id="form-categoria">
+          <h3 class="form-titulo">Nueva categoría</h3>
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="cat-nombre" placeholder="Nombre de la categoría">
+          </div>
+          <div class="form-actions">
+            <button class="btn-cancelar" id="btn-cancelar-categoria">Cancelar</button>
+            <button class="btn-guardar" id="btn-guardar-categoria">Guardar categoría</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de categorías -->
+      <div class="admin-lista" id="lista-categorias"></div>
+
+    </section>
+
+  </main>
+
+  <script type="module" src="assets/js/admin.js"></script>
+
+</body>
+</html>
