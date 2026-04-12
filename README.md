@@ -9,24 +9,64 @@ Template de catálogo web con consulta por WhatsApp. Diseñado para ser replicad
 - Consulta directa por WhatsApp con mensaje prellenado
 - Badge de sin stock
 - Hash routing — links directos a productos y categorías
+- Panel de administración protegido con login
+- CRUD completo de productos y categorías desde el panel
+- Variantes de producto con label personalizado (talles, medidas, colores, etc.)
+- Recuperación de contraseña por email
+- Actualización en tiempo real — cambios en el panel se reflejan instantáneamente en el catálogo
 - Diseño responsive mobile first
-- Sin frameworks ni dependencias — HTML, CSS y JS puro
+- Sin frameworks — HTML, CSS y JS puro con módulos ES6
 
-## Estructura
+## Stack
+
+- HTML + CSS + JavaScript (módulos ES6)
+- Firebase Firestore — base de datos en tiempo real
+- Firebase Authentication — login y sesiones
 
 ## Cómo replicar para un nuevo cliente
 
-1. Clonar o copiar el repositorio
-2. Editar `config.js` con los datos del cliente
-3. Reemplazar `assets/img/logo.png` con el logo de la tienda
-4. Agregar fotos en `assets/img/productos/`
-5. Ajustar los colores en `assets/css/theme.css`
-6. Subir al hosting
+### 1 — Crear el proyecto Firebase
 
-## Personalización
+1. Entrá a [console.firebase.google.com](https://console.firebase.google.com)
+2. Creá un proyecto nuevo con el nombre del cliente
+3. Activá **Firestore Database** en modo producción
+4. Activá **Authentication** con email y contraseña
+5. Registrá la app web y copiá las credenciales
+6. Creá el usuario admin del cliente en Authentication → Users
 
-### Colores
-Editar las tres variables de acento en `theme.css`:
+### 2 — Configurar el proyecto
+
+Editá `config.js` con los datos del cliente:
+
+```js
+export const STORE_CONFIG = {
+  nombre:         "Nombre de la tienda",
+  slogan:         "Slogan opcional",
+  logo:           "",              // ruta a la imagen o vacío
+  whatsapp:       "5493815000000", // código de país + número, sin +
+  mensajeBase:    "Hola! Me interesa este producto: ",
+  mensajeGeneral: "Hola! Me gustaría ver el catálogo de ",
+
+  redes: {
+    instagram: "",
+    facebook:  "",
+    tiktok:    "",
+  },
+
+  firebase: {
+    apiKey:            "...",
+    authDomain:        "...",
+    projectId:         "...",
+    storageBucket:     "...",
+    messagingSenderId: "...",
+    appId:             "...",
+  },
+};
+```
+
+### 3 — Personalizar la identidad visual
+
+Editá las tres variables de acento en `assets/css/theme.css`:
 
 ```css
 --color-accent:       #C17B4E;
@@ -34,26 +74,43 @@ Editar las tres variables de acento en `theme.css`:
 --color-accent-dark:  #9A5E35;
 ```
 
-### Productos
-Agregar o editar entradas en el array `productos` de `config.js`:
+### 4 — Subir al hosting
 
-```js
-{
-  id:          1,          // número único, no repetir
-  nombre:      "Nombre",
-  categoria:   "Cat1",     // debe coincidir con categorias[]
-  precio:      10000,      // número sin puntos ni $
-  imagen:      "assets/img/productos/foto.jpg", 
-  descripcion: "Descripción corta",
-  talles:      ["S", "M", "L"],  // vacío [] si no aplica
-  disponible:  true,             // false = muestra "Sin stock"
+El proyecto funciona en cualquier hosting estático:
+- [Netlify](https://netlify.com) — recomendado, drag & drop
+- [Vercel](https://vercel.com)
+- GitHub Pages
+- cPanel — subir los archivos por FTP
+
+### 5 — Configurar el dominio
+
+Apuntar el dominio del cliente al hosting elegido.
+
+## URLs del sistema
+
+| URL | Acceso |
+|-----|--------|
+| `tienda.com/` | Catálogo público |
+| `tienda.com/#vestidos` | Catálogo filtrado por categoría |
+| `tienda.com/#producto-abc123` | Modal de producto específico |
+| `tienda.com/login.html` | Login del administrador |
+| `tienda.com/admin.html` | Panel de administración |
+
+## Reglas de Firestore recomendadas para producción
+
+Una vez que el sitio esté en producción, reemplazá las reglas de Firestore en la consola de Firebase por estas:
+rules_version = '2';
+service cloud.firestore {
+match /databases/{database}/documents {
+
+// Productos y categorías: lectura pública, escritura solo autenticados
+match /productos/{id} {
+  allow read: if true;
+  allow write: if request.auth != null;
 }
-```
-
-## URLs disponibles
-
-| URL | Resultado |
-|-----|-----------|
-| `tienda.com/` | Catálogo completo |
-| `tienda.com/#vestidos` | Filtrado por categoría |
-| `tienda.com/#producto-3` | Abre el modal del producto con id 3 |
+match /categorias/{id} {
+  allow read: if true;
+  allow write: if request.auth != null;
+}
+}
+}
