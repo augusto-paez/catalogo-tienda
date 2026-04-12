@@ -22,18 +22,19 @@ const App = {
   // hashResuelto evita que manejarHash se ejecute más de una vez
   // ya que onSnapshot puede dispararse múltiples veces.
   escucharFirestore() {
+    // Estado de carga mientras Firestore responde
     document.getElementById("catalogo").innerHTML = `
-      <div class="estado-vacio">
-        <div class="estado-vacio-icono">⏳</div>
+      <div class="estado-carga">
+        <div class="estado-carga-spinner"></div>
         <p>Cargando productos...</p>
       </div>
     `;
 
+    let hashResuelto = false;
     Firebase.escucharCategorias(categorias => {
       Catalogo.setCategorias(categorias);
     });
 
-    let hashResuelto = false;
     Firebase.escucharProductos(productos => {
       Catalogo.setProductos(productos);
       if (!hashResuelto) {
