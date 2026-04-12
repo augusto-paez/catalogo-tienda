@@ -1,17 +1,19 @@
-const Filtros = {
+import { Catalogo } from "./catalogo.js";
+
+export const Filtros = {
 
   categoriaActiva: "Todas",
   busqueda: "",
 
-  // Renderiza los botones de filtro leyendo las categorías de config.js.
+  // Renderiza los botones de filtro con las categorías recibidas desde Firestore.
   // "Todas" se agrega siempre como primera opción.
-  renderFiltros() {
+  renderFiltros(categorias) {
     const el = document.getElementById("filtros");
     if (!el) return;
 
-    const categorias = ["Todas", ...STORE_CONFIG.categorias];
+    const nombres = ["Todas", ...categorias.map(c => c.nombre)];
 
-    el.innerHTML = categorias.map(cat => `
+    el.innerHTML = nombres.map(cat => `
       <button
         class="btn-filtro ${cat === this.categoriaActiva ? "activo" : ""}"
         data-categoria="${cat}"
@@ -19,12 +21,12 @@ const Filtros = {
     `).join("");
   },
 
-// Actualiza la categoría activa y re-renderiza filtros y catálogo.
+  // Actualiza la categoría activa y re-renderiza filtros y catálogo.
   // Actualiza el hash de la URL para permitir links directos a categorías.
   setCategoria(cat) {
     this.categoriaActiva = cat;
     window.location.hash = cat === "Todas" ? "" : cat.toLowerCase();
-    this.renderFiltros();
+    this.renderFiltros(Catalogo.categorias);
     Catalogo.renderCatalogo();
   },
 
@@ -34,10 +36,10 @@ const Filtros = {
     Catalogo.renderCatalogo();
   },
 
-  // Devuelve los productos filtrados por categoría y búsqueda.
-  // Lo usan Catalogo.js para renderizar las cards.
-  productosFiltrados() {
-    return STORE_CONFIG.productos.filter(p => {
+  // Devuelve los productos filtrados por categoría activa y texto de búsqueda.
+  // Recibe el array de productos desde Catalogo.js.
+  productosFiltrados(productos) {
+    return productos.filter(p => {
       const matchCategoria =
         this.categoriaActiva === "Todas" || p.categoria === this.categoriaActiva;
 
@@ -53,8 +55,8 @@ const Filtros = {
   },
 
   // Registra los eventos del buscador y los botones de filtro.
-  // Usa delegación de eventos en el contenedor de filtros para
-  // no tener que registrar un listener por cada botón.
+  // Usa delegación de eventos en el contenedor para no registrar
+  // un listener por cada botón.
   bindEventos() {
     document.getElementById("filtros")?.addEventListener("click", e => {
       const btn = e.target.closest(".btn-filtro");
