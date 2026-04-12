@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso — Admin</title>
+
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/login.css">
+</head>
+<body class="login-body">
+
+  <div class="login-card">
+
+    <!-- Logo o nombre de la tienda -->
+    <div class="login-brand">
+      <span id="store-nombre" class="login-nombre"></span>
+      <p class="login-subtitulo">Panel de administración</p>
+    </div>
+
+    <!-- Formulario de login -->
+    <div class="login-form" id="form-login">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="tu@email.com"
+          autocomplete="email"
+        >
+      </div>
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          placeholder="••••••••"
+          autocomplete="current-password"
+        >
+      </div>
+
+      <!-- Mensaje de error — oculto por defecto -->
+      <p class="login-error" id="login-error"></p>
+
+      <button class="btn-login" id="btn-login">Ingresar</button>
+
+      <button class="btn-recuperar" id="btn-recuperar">
+        Olvidé mi contraseña
+      </button>
+    </div>
+
+    <!-- Vista de recuperación de contraseña — oculta por defecto -->
+    <div class="login-form" id="form-recuperar" style="display:none">
+      <p class="recuperar-texto">
+        Ingresá tu email y te enviaremos un link para restablecer tu contraseña.
+      </p>
+      <div class="form-group">
+        <label for="email-recuperar">Email</label>
+        <input
+          id="email-recuperar"
+          type="email"
+          placeholder="tu@email.com"
+          autocomplete="email"
+        >
+      </div>
+
+      <p class="login-error" id="recuperar-error"></p>
+      <p class="login-success" id="recuperar-success"></p>
+
+      <button class="btn-login" id="btn-enviar-recuperar">Enviar link</button>
+      <button class="btn-recuperar" id="btn-volver">Volver al login</button>
+    </div>
+
+  </div>
+
+  <script type="module" src="assets/js/login.js"></script>
+
+</body>
+</html>
