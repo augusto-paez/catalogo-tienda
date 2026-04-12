@@ -1,4 +1,6 @@
-const WhatsApp = {
+import { STORE_CONFIG } from "../../config.js";
+
+export const WhatsApp = {
 
   // Abre WhatsApp con un mensaje referenciando un producto específico.
   // El nombre del producto se envía en negrita usando el formato de WA.

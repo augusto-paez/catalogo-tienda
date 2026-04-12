@@ -1,4 +1,7 @@
-const ConfigLoader = {
+import { STORE_CONFIG } from "../../config.js";
+import { WhatsApp } from "./whatsapp.js";
+
+export const ConfigLoader = {
 
   // Punto de entrada — aplica todos los datos de STORE_CONFIG al DOM
   init() {
@@ -6,6 +9,7 @@ const ConfigLoader = {
     this.aplicarHero();
     this.aplicarRedes();
     this.aplicarFooter();
+    this.aplicarWhatsAppHeader();
   },
 
   // Aplica nombre, logo y slogan al header
@@ -56,6 +60,19 @@ const ConfigLoader = {
   aplicarFooter() {
     const el = document.getElementById("footer-nombre");
     if (el) el.textContent = STORE_CONFIG.nombre;
+  },
+
+  // Registra el evento del botón de WhatsApp del header y el botón flotante.
+  // Como WhatsApp ahora es un módulo no puede llamarse desde el HTML con onclick,
+  // por eso se registra el evento desde acá.
+  aplicarWhatsAppHeader() {
+    document.querySelector(".btn-wa-header")?.addEventListener("click", () => {
+      WhatsApp.consultaGeneral();
+    });
+
+    document.querySelector(".btn-wa-flotante")?.addEventListener("click", () => {
+      WhatsApp.consultaGeneral();
+    });
   },
 
   // Crea un elemento <a> con el ícono SVG de la red social

@@ -1,3 +1,4 @@
+import { STORE_CONFIG } from "../../config.js";
 import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, onSnapshot,
          addDoc, updateDoc, deleteDoc, doc }    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
